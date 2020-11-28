@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 from typing import Optional, Union
 
 from fastapi import FastAPI, Request
@@ -7,7 +8,8 @@ from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+current_dir = Path(__file__).parent.absolute()
+app.mount("/static", StaticFiles(directory=current_dir.joinpath("static")), name="static")
 
 
 def timestamp(value: Optional[Union[datetime, int]], format_: str = "%Y-%m-%d %H:%M:%S") -> str:
@@ -18,7 +20,7 @@ def timestamp(value: Optional[Union[datetime, int]], format_: str = "%Y-%m-%d %H
     return ""
 
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=current_dir.joinpath("templates"))
 templates.env.filters["timestamp"] = timestamp
 
 
